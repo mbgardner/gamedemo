@@ -1,0 +1,25 @@
+/* CSS declarations go here */
+
+#gameContainer {
+	width:720px;
+	margin:auto;
+}
+
+#canvasContainer {
+	height:500px;
+	width:700px;
+	margin:auto;
+	margin-top:50px;
+	border:thin solid black;
+}
+
+.nameInfo {
+	width:400px;
+	margin:auto;
+	margin-top:20px;
+	text-align:center;
+}
+
+.kineticjs-content:hover {
+	cursor:pointer;
+}

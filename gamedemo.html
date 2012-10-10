@@ -1,0 +1,35 @@
+<head>
+  <title>gamedemo</title>
+  <script src="http://www.html5canvastutorials.com/libraries/kinetic-v4.0.1.js"></script>
+</head>
+
+<body>
+  {{> gameContainer}}
+</body>
+
+<template name="gameContainer">
+	<div id="gameContainer">
+		{{#constant}}
+  		<div id="canvasContainer"></div>
+  	{{/constant}}
+  	{{#if player}}
+  		{{> playing}}
+  	{{else}}
+  		{{> newPlayer}}
+  	{{/if}}
+  </div>
+</template>
+
+<template name="playing">
+	<div class="nameInfo">
+		<label>Logged in as {{playerName}}</label>
+	</div>
+</template>
+
+<template name="newPlayer">
+	<div class="nameInfo">
+		<label id="nameLabel">Create Player</label>
+		<input id="nameInput"></input>
+		<button id="nameButton">Create</button>
+	</div>
+</template>
