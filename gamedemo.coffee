@@ -56,12 +56,12 @@ if Meteor.isClient
         cursorLayer = new Kinetic.Layer
         stage.add(cursorLayer)
         cursor = new Kinetic.Rect
-          x: 0,
-          y: 0,
-          height: 50,
-          width: 50,
-          stroke: "black",
-          strokeWidth: 4,
+          x: 0
+          y: 0
+          height: 50
+          width: 50
+          stroke: "black"
+          strokeWidth: 4
           draggable: true
         cursorLayer.add(cursor)
         cursorLayer.draw()
@@ -74,7 +74,7 @@ if Meteor.isClient
       Players.findOne({_id: Session.get('playerID')})?.name
 
   Meteor.autosubscribe () ->
-    loc = undefined
+    console.log "autosubscribing..."
 
     Meteor.subscribe 'loadTerrain', () ->
       Terrain.find({}).forEach (tile) ->
@@ -88,11 +88,13 @@ if Meteor.isClient
 
     if Session.get('playerID')
       Meteor.subscribe 'loadPlayer', Session.get('playerID'), () ->
-        console.log "subscribed..."
-        loc = Players.findOne(Session.get('playerID')).loc
-        Meteor.subscribe 'localPlayers', loc
+        console.log "subscribed player..."
 
-    Players.find().observe
+    if Players.findOne(Session.get('playerID'))
+      Meteor.subscribe 'localPlayers', Players.findOne(Session.get('playerID')).loc, () ->
+        console.log "subscribed locals..."
+
+    ###Players.find().observe
       added: () ->
         console.log "added..."
         drawMap()
@@ -101,7 +103,17 @@ if Meteor.isClient
         drawMap()
       removed: () ->
         console.log "removed..."
-        drawMap()
+        drawMap()###
+  Players.find().observe
+    added: () ->
+      console.log "added..."
+      drawMap()
+    changed: () ->
+      console.log "changed..."
+      drawMap()
+    removed: () ->
+      console.log "removed..."
+      drawMap()
 
   drawMap = () ->
     if playerLayer is undefined then return
@@ -127,14 +139,15 @@ if Meteor.isServer
 		for y in [0..9]
 			for x in [0..13]
 				Terrain.insert
-					x: x,
-					y: y,
+					x: x
+					y: y
 					type: terrainTypes[Math.floor(Math.random() * terrainTypes.length)]
 
   Meteor.publish 'loadPlayer', (id) ->
     Players.find(id)
 
   Meteor.publish 'localPlayers', (loc) ->
+    console.log Players.find({loc: {$near: loc, $maxDistance:200}}).count()
     Players.find({loc: {$near: loc, $maxDistance:200}})
 
   Meteor.publish 'loadTerrain', () ->
